@@ -24,14 +24,22 @@ class SensorGridWorld(gym.Env):
               # High Value Target
               self.grid[509:539,509:539] = 75
               numDrone = self.DRONES
-              for each in range (0,numDrone):
-                     temp1 = random.randint(0,1048)
-                     temp2 = random.randint(0, 1048)
-                     self.grid[temp1 - 100:temp1 + 100, temp2 - 100:temp2 + 100] = 150
-                     self.grid[temp1 - 75:temp1 + 75, temp2 - 75:temp2 + 75] = 200
-                     self.grid[temp1 - 25:temp1 + 25, temp2 - 25:temp2 + 25] = 125
-                     self.grid[temp1, temp2] = 0
-                     # High Value Target
+              SENSORS = (("Radar",200),("IR",60),("Light",40))
+              DRONES = list()
+
+              for each in range(0, numDrone):
+                     DRONES.append((random.randint(0,1048),random.randint(0,1048)))
+              print(DRONES)
+              # Sensor 1
+              for x in range(0, numDrone):
+                     self.grid[DRONES[x][0] - SENSORS[0][1]:DRONES[x][0] + SENSORS[0][1], DRONES[x][1] - SENSORS[0][1]: DRONES[x][1] + SENSORS[0][1]] = 150
+              # Sensor 2
+              for x in range(0, numDrone):
+                     self.grid[DRONES[x][0] - SENSORS[1][1]:DRONES[x][0] + SENSORS[1][1], DRONES[x][1] - SENSORS[1][1]: DRONES[x][1] + SENSORS[1][1]] = 75
+              # sensor 3
+              for x in range(0, numDrone):
+                     self.grid[DRONES[x][0] - SENSORS[2][1]:DRONES[x][0] + SENSORS[2][1], DRONES[x][1] - SENSORS[2][1]: DRONES[x][1] + SENSORS[2][1]] = 30
+              # High Value Target
               self.grid[509:539, 509:539] = 75
               temp = self.grid
               return temp
