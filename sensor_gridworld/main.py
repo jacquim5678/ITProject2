@@ -1,10 +1,15 @@
 import random
 from cgitb import reset
 import gym
+import warnings
+
+import xarray as xr
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from gym import spaces
+
+warnings.simplefilter("always")
 
 class SensorGridWorld(gym.Env):
        # Custom Sensor Grid world environment. This 
@@ -35,7 +40,7 @@ class SensorGridWorld(gym.Env):
                      self.grid[DRONES[x][0] - SENSORS[0][1]:DRONES[x][0] + SENSORS[0][1], DRONES[x][1] - SENSORS[0][1]: DRONES[x][1] + SENSORS[0][1]] = 150
               # Sensor 2
               for x in range(0, numDrone):
-                     self.grid[DRONES[x][0] - SENSORS[1][1]:DRONES[x][0] + SENSORS[1][1], DRONES[x][1] - SENSORS[1][1]: DRONES[x][1] + SENSORS[1][1]] = 75
+                     self.grid[DRONES[x][0] - SENSORS[1][1]:DRONES[x][0] + SENSORS[1][1], DRONES[x][1] - SENSORS[1][1]: DRONES[x][1] + SENSORS[1][1]] = 200
               # sensor 3
               for x in range(0, numDrone):
                      self.grid[DRONES[x][0] - SENSORS[2][1]:DRONES[x][0] + SENSORS[2][1], DRONES[x][1] - SENSORS[2][1]: DRONES[x][1] + SENSORS[2][1]] = 30
