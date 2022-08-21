@@ -2,7 +2,7 @@ import random
 from cgitb import reset
 import gym
 import warnings
-
+import math
 
 import xarray as xr
 import seaborn as sns
@@ -16,87 +16,117 @@ from gym import spaces
 
 warnings.simplefilter("always")
 
+
 class SensorGridWorld(gym.Env):
-       # Custom Sensor Grid world environment. This 
-       # environment will simulate a battlefield 
-       # encompassing a High value target, sensors and enemy targets
-       def __init__(self, grid_size=1048):
-              super(SensorGridWorld, self).__init__()
-              # Size 
-              self.grid_size = grid_size
-              self.HVT = ((45,23))
-              self.DRONES = 4
-              self.ENEMY = 1
+    # Custom Sensor Grid world environment. This
+    # environment will simulate a battlefield
+    # encompassing a High value target, sensors and enemy targets
+    def __init__(self, grid_size, DRONES):
+        super(SensorGridWorld, self).__init__()
+        # Size
+        self.grid_size = grid_size
+        self.DRONES = DRONES
+        self.ENEMY = 1
 
-       def reset(self):
-              patches = []
-              numDrone = self.DRONES
-              SENSORS = (("Radar",200),("IR",60),("Light",40))
-              DRONES = list()
-              patches.append((Rectangle((450,450), 400, 150, color="green")))
+    def reset(self):
+        # Grid Plot Initialisation
+        fig, ax = plt.subplots(figsize=(1048, 1048), dpi=10)
+        plt.xlim([0, 1048])
+        plt.ylim([0, 1048])
+        plt.tight_layout(pad=0)
+        plt.axis("image")
 
-              x = []
-              x.append(tuple((random.randint(0,1048),random.randint(0,1048))))
-              x.append(tuple((random.randint(0,1048),random.randint(0,1048))))
-              x.append(tuple((random.randint(0,1048),random.randint(0,1048))))
-              print(x)
-              
-              for x in x:
-                     circle = Circle((x[0], x[1]), 210, color="purple", alpha=0.5)
-                     patches.append(circle)
-                     circle = Circle((x[0], x[1]), 75, color="yellow", alpha=0.5)
-                     patches.append(circle)
-                     circle = Circle((x[0], x[1]), 180, color="pink", alpha=0.5)
-                     patches.append(circle)
-                     circle = Circle((x[0], x[1]), 1, color="black", alpha=1)
-                     patches.append(circle)
-              
-              numEnemy = self.ENEMY
-              ENEMY = list()
-              stepsEmtake = 1000  # No. of times will iterate through movements
-              # Do only once to set starting point
-              ENEMY.append((random.randint(0, 200), random.randint(0, 200)))
-              for x in range(0, stepsEmtake):
-                  print("em location is")
-                  print(ENEMY)
-                  ENEMY.append((ENEMY[x][0] + random.randint(-5, 5), ENEMY[x][1] + random.randint(-5, 5)))  # Indicates EM
-                  # movement should probs only be one 1m
-              temp = ENEMY.copy()
-              temp.append((0,0))
-              
-              print(ENEMY)
-              code = [Path.MOVETO] + [Path.LINETO]*(len(ENEMY)-1) + [Path.CLOSEPOLY]
-              print(code)
-              path = Path(temp,code)
-              enemyPath = PathPatch(path, color='red', lw=100, fill=False)
-              
-              dimension = []
-              dimension.append(Rectangle((0,0), 1, 1))  
-              dimension.append(Rectangle((0,1048), 1, 1)) 
-              dimension.append(Rectangle((1048,0), 1, 1)) 
-              dimension.append(Rectangle((1048,1048), 1, 1)) 
-              print(patches)
-              print(dimension)              
-              p2= PatchCollection(dimension, alpha=0)
-              print(enemyPath)
-              fig, ax = plt.subplots(figsize=(1048,1048), dpi=10)
-              ax.add_collection(p2)
-              for each in patches:
-                  ax.add_artist(each)
-              ax.add_patch(enemyPath)
-              plt.xlim([0,1048])
-              plt.ylim([0,1048])
-              plt.tight_layout(pad=.5)
-              plt.axis("image")
-              
-              plt.show()
-              
-              
-       def render(self, mode='console'):
-                print("render")
+        # Empty Grid
+        Grid = []
+        Grid.append(Rectangle((0, 0), 1, 1))
+        Grid.append(Rectangle((0, 1048), 1, 1))
+        Grid.append(Rectangle((1048, 0), 1, 1))
+        Grid.append(Rectangle((1048, 1048), 1, 1))
+        GridPatch = PatchCollection(Grid, alpha=0)
+        ax.add_collection(GridPatch)
 
-       def close(self):
-              pass
-env = SensorGridWorld()
+        # High Value Target
+        HVT = []
+        HVT.append(Rectangle((450, 450), 400, 150, color="blue"))
+        for x in HVT:
+            ax.add_artist(x)
+
+        # Obstacles
+        Obstacles = []
+        for x in range(0, 4):
+            Obstacles.append(Rectangle((random.randint(0, 1048), random.randint(
+                0, 1048)), random.randint(20, 100), random.randint(20, 100), color="black"))
+        for x in Obstacles:
+            ax.add_artist(x)
+
+        # Sensors
+        DRONES = self.DRONES
+        Drones = []
+        for x in DRONES:
+            sensor = x[1]
+            for y in sensor:
+                Drones.append(Circle(
+                    (x[0][0], x[0][1]), SensorData[y-1][1], color=SensorData[y-1][3], alpha=0.5))
+        for x in Drones:
+            ax.add_artist(x)
+
+        x = []
+        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
+        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
+        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
+
+        numEnemy = self.ENEMY
+        ENEMY = list()
+        stepsEmtake = 100  # No. of times will iterate through movements
+        # Do only once to set starting point
+        ENEMY.append((random.randint(0, 200), random.randint(0, 200)))
+        for x in range(0, stepsEmtake):
+            print("em location is")
+            print(ENEMY)
+            ENEMY.append((ENEMY[x][0] + random.randint(-5, 5),
+                         ENEMY[x][1] + random.randint(-5, 5)))  # Indicates EM
+            # movement should probs only be one 1m
+        temp = ENEMY.copy()
+        temp.append((0, 0))
+        print(ENEMY)
+        code = [Path.MOVETO] + [Path.LINETO]*(len(ENEMY)-1) + [Path.CLOSEPOLY]
+        print(code)
+        path = Path(temp, code)
+        enemyPath = PathPatch(path, color='red', lw=100, fill=False)
+
+        ax.add_patch(enemyPath)
+
+        plt.show()
+
+    def render(self, mode='console'):
+        print("render")
+
+    def close(self):
+        pass
+
+
+# No - Name - Range - Battery Use
+# 1 - IR - 15m - 2 - Pink
+# 2 - US - 10m - 1 - Green
+# 3 - Acoustic - 400m - 2 - Yellow
+# 4 - Optical - 100m - 6 - Purple
+SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
+              "purple"), ("IR", 15, 2, "pink"), ("US", 10, 1, "green"))
+GRIDSIZE = 1048
+MIDPOINT = int(GRIDSIZE/2)
+T = 300
+# SensorGridWorld(GridSize,DroneCharacteristic)
+DRONES = []
+DRONES.append(((int(T+MIDPOINT), int(MIDPOINT)), (1, 3, 4)))
+DRONES.append(
+    ((int(T+math.cos(60)+MIDPOINT), int(T+math.sin(60)+MIDPOINT)), (2, 3)))
+DRONES.append(((int(-T+math.cos(120)+MIDPOINT),
+              int(T+math.sin(120)+MIDPOINT)), (1, 2, 3, 4)))
+DRONES.append(((int(-T+MIDPOINT), MIDPOINT), (1, 3, 4)))
+DRONES.append(
+    ((int(-T+math.cos(240)+MIDPOINT), int(-T+math.sin(240)+MIDPOINT)), (2, 3, 4)))
+DRONES.append(
+    ((int(T+math.cos(360)+MIDPOINT), int(-T+math.sin(360)+MIDPOINT)), (3, 4)))
+env = SensorGridWorld(GRIDSIZE, DRONES)
 env.reset()
 env.render()
