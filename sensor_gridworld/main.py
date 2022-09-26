@@ -74,27 +74,47 @@ class SensorGridWorld(gym.Env):
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
-
+        
+        #REDTEAM
+        
         numREDTEAM = self.REDTEAM
-        REDTEAM = list()
-        stepsRedtake = 10  # No. of times will iterate through movements
+        REDTEAM = 0
+        stepsRedtake = 0  # No. of times will iterate through movements
         # Do only once to set starting point
-        REDTEAM.append((random.randint(0, 200), random.randint(0, 200)))
-        for x in range(0, stepsRedtake):
-            REDTEAM.append((REDTEAM[x][0] + random.randint(-100, 100),
-                         REDTEAM[x][1] + random.randint(-100, 100)))  # Indicates EM
-            # movement should probs only be one 1m
-        temp = REDTEAM.copy()
-        temp.append((0, 0))
-        print ("Cords for enmey are:")
-        print(REDTEAM)
-        code = [Path.MOVETO] + [Path.LINETO]*(len(REDTEAM)-1) + [Path.CLOSEPOLY]
-        print(code)
-        path = Path(temp, code)
+        # Assigning grid coord fpr EN to spwan at (only edges)
+        sides = ['top', 'bottom', 'left', 'right']
+        side = random.choice(sides)
+        if side == 'top':
+            # Cord to spawn at top (x,Y)
+            REDTEAM = ((random.randint(0, 1048), random.randint(0, 100)))
+        elif side == 'bottom':
+            REDTEAM = ((random.randint(0, 1048), random.randint(900, 1048)))
+        elif side == 'left':
+            REDTEAM = ((random.randint(0, 100), random.randint(0, 1048)))
+        elif side == 'right':
+            REDTEAM = ((random.randint(900, 1048), random.randint(0, 1048)))
+        
+        #no longer needed
+        # for x in range(0, stepsRedtake):
+        #     REDTEAM.append((REDTEAM[x][0] + random.randint(-100, 100),
+        #                  REDTEAM[x][1] + random.randint(-100, 100)))  # Indicates EM
+        #     # movement should probs only be one 1m
+        
+        
+        # getting REDTEAM to centre
+        GRIDSIZE = 1048
+        MIDPOINT = int(GRIDSIZE/2)
+        MIDCORDS = (MIDPOINT, MIDPOINT)
+        # List of places REDTEAM tranversed
+        RedTeamLocations = [REDTEAM, MIDCORDS]
+        
+        # Drawing the line between points
+        code = [Path.MOVETO] + [Path.LINETO] 
+        path = Path(RedTeamLocations, code)
+        
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
         ax.add_patch(RedTeamPath)
-
         plt.show()
 
     def render(self, mode='console'):
