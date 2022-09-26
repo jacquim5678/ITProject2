@@ -26,7 +26,7 @@ class SensorGridWorld(gym.Env):
         # Size
         self.grid_size = grid_size
         self.DRONES = DRONES
-        self.ENEMY = 1
+        self.REDTEAM = 1
 
     def reset(self):
         # Grid Plot Initialisation
@@ -75,26 +75,25 @@ class SensorGridWorld(gym.Env):
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
 
-        numEnemy = self.ENEMY
-        ENEMY = list()
-        stepsEmtake = 100  # No. of times will iterate through movements
+        numREDTEAM = self.REDTEAM
+        REDTEAM = list()
+        stepsRedtake = 10  # No. of times will iterate through movements
         # Do only once to set starting point
-        ENEMY.append((random.randint(0, 200), random.randint(0, 200)))
-        for x in range(0, stepsEmtake):
-            print("em location is")
-            print(ENEMY)
-            ENEMY.append((ENEMY[x][0] + random.randint(-5, 5),
-                         ENEMY[x][1] + random.randint(-5, 5)))  # Indicates EM
+        REDTEAM.append((random.randint(0, 200), random.randint(0, 200)))
+        for x in range(0, stepsRedtake):
+            REDTEAM.append((REDTEAM[x][0] + random.randint(-100, 100),
+                         REDTEAM[x][1] + random.randint(-100, 100)))  # Indicates EM
             # movement should probs only be one 1m
-        temp = ENEMY.copy()
+        temp = REDTEAM.copy()
         temp.append((0, 0))
-        print(ENEMY)
-        code = [Path.MOVETO] + [Path.LINETO]*(len(ENEMY)-1) + [Path.CLOSEPOLY]
+        print ("Cords for enmey are:")
+        print(REDTEAM)
+        code = [Path.MOVETO] + [Path.LINETO]*(len(REDTEAM)-1) + [Path.CLOSEPOLY]
         print(code)
         path = Path(temp, code)
-        enemyPath = PathPatch(path, color='red', lw=100, fill=False)
+        RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
-        ax.add_patch(enemyPath)
+        ax.add_patch(RedTeamPath)
 
         plt.show()
 
