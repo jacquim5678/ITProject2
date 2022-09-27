@@ -75,7 +75,7 @@ class SensorGridWorld(gym.Env):
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         
-        #REDTEAM
+        # REDTEAM
         
         numREDTEAM = self.REDTEAM
         REDTEAM = 0
@@ -106,11 +106,21 @@ class SensorGridWorld(gym.Env):
         MIDPOINT = int(GRIDSIZE/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
         # List of places REDTEAM tranversed
-        RedTeamLocations = [REDTEAM, MIDCORDS]
+        gradient = (REDTEAM[1] - MIDCORDS[1]/REDTEAM[0] - MIDCORDS[0])
+        c = REDTEAM[1] - REDTEAM[0] * gradient
+        print(gradient, c)
+        ## slope of line fromula y = mx + c;
+        RedTeamLocations = []
+        for x in range (REDTEAM[0], MIDCORDS[0]):
+            y = gradient * x + c
+            RedTeamLocations.append(x, y)
+        print(RedTeamLocations)
+        # Two end points to plot
+        RedTeamtStartEnd = [REDTEAM, MIDCORDS]
         
         # Drawing the line between points
         code = [Path.MOVETO] + [Path.LINETO] 
-        path = Path(RedTeamLocations, code)
+        path = Path(RedTeamtStartEnd, code)
         
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
