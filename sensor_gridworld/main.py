@@ -111,9 +111,9 @@ class SensorGridWorld(gym.Env):
         print(gradient, c)
         ## slope of line fromula y = mx + c;
         RedTeamLocations = []
-        for x in range (REDTEAM[0], MIDCORDS[0]):
+        for x in range(REDTEAM[0], MIDCORDS[0]):
             y = gradient * x + c
-            RedTeamLocations.append(x, y)
+            RedTeamLocations.append(x)
         print(RedTeamLocations)
         # Two end points to plot
         RedTeamtStartEnd = [REDTEAM, MIDCORDS]
