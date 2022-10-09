@@ -105,18 +105,29 @@ class SensorGridWorld(gym.Env):
         GRIDSIZE = 1048
         MIDPOINT = int(GRIDSIZE/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
-        # List of places REDTEAM tranversed
-        gradient = (REDTEAM[1] - MIDCORDS[1]/REDTEAM[0] - MIDCORDS[0])
-        c = REDTEAM[1] - REDTEAM[0] * gradient
-        print(gradient, c)
-        ## slope of line fromula y = mx + c;
+        print("REDTEAM COORDS: ", REDTEAM[0], REDTEAM[1])
+        #used to preserve values of REDTEAm tuple for drawing of REDTEAM path
+        REDTEAMCALCS = (REDTEAM[0], REDTEAM[1])
+
+        # ------------------ List of places REDTEAM tranversed --------------------#
+        ## linear line formula y = mx + c;
+        #since redteam is travelling to exact middle, treat middle as origin and thus c will be 0
+        c = 0
         RedTeamLocations = []
-        for x in range(REDTEAM[0], MIDCORDS[0]):
-            y = gradient * x + c
-            y = round(y)
-            temp = [x,y]
-            RedTeamLocations.append(temp)
-        print(RedTeamLocations)
+        if (REDTEAMCALCS[0] < MIDCORDS[0]):
+            #subtract origin point values of midcords to get euclidean location of redteam
+            REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
+            gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
+            print(gradient)
+            for x in range(REDTEAMCALCS[0], 1):
+                y = gradient * x + c
+                y = round(y)
+                #add back midcord values to get actual location of redteam at each timestep
+                x = x + MIDCORDS[0]
+                y = y + MIDCORDS[1]
+                temp = [x,y]
+                RedTeamLocations.append(temp)
+        #print(RedTeamLocations)
         # Two end points to plot
         RedTeamtStartEnd = [REDTEAM, MIDCORDS]
         
@@ -158,6 +169,12 @@ DRONES.append(
     ((int(-T+math.cos(240)+MIDPOINT), int(-T+math.sin(240)+MIDPOINT)), (2, 3, 4)))
 DRONES.append(
     ((int(T+math.cos(360)+MIDPOINT), int(-T+math.sin(360)+MIDPOINT)), (3, 4)))
+
+print(DRONES)
+
+#loop to check list of cells covered by redteam and compare to list of cells covered by sensors
+
+
 env = SensorGridWorld(GRIDSIZE, DRONES)
 env.reset()
 env.render()
