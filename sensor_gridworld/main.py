@@ -80,12 +80,6 @@ class SensorGridWorld(gym.Env):
                         init_XY = (init_XY[0] + 1, init_XY[1])
                     init_XY = (init_XY[0] - 2*SensorData[y-1][1] - 1, init_XY[1])
                     init_XY = (init_XY[0], init_XY[1] + 1)
-                
-
-        
-            #leftmost, bottommost
-            #iterate through 2*r times
-            #for each type of sensor?
         for x in Drones:
             ax.add_artist(x)    
 
