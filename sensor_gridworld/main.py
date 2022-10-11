@@ -156,10 +156,13 @@ class SensorGridWorld(gym.Env):
 
         #loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
-        for x in RedTeamLocations:
-            #print(x, SENSEDAREA.count(x))
+
+        x = 0
+        for x in range(len(RedTeamLocations)):
+            print(RedTeamLocations[x], SENSEDAREA.count(RedTeamLocations[x]))
             if SENSEDAREA.count(x) >= 1:
                 RedTeamSensed.append(x)
+            x = x + 1
         
         #print(DRONES[0][0])
         #print(SENSEDAREA.count((633, 424)))#
@@ -170,7 +173,7 @@ class SensorGridWorld(gym.Env):
             print("The Red Team was not sensed ", RedTeamSensed)
 
         ax.add_patch(RedTeamPath)
-        #plt.show()
+        plt.show()
 
     def render(self, mode='console'):
         print("render")
