@@ -66,7 +66,11 @@ class SensorGridWorld(gym.Env):
         rpt = 1
         for x in DRONES:
             sensor = x[1]
+            #print("Starting Drone: ", x)
             for y in sensor:
+                #print("------- Starting Sensor: ", y)
+                #print("-------------- Sensor range: ", SensorData[y-1][1])
+                init_length = len(SENSEDAREA)
                 Drones.append(Circle(
                     (x[0][0], x[0][1]), SensorData[y-1][1], color=SensorData[y-1][3], alpha=0.5))
                 #------------------- Find Area covered by Sensors -----------------------#
@@ -82,8 +86,9 @@ class SensorGridWorld(gym.Env):
                             SENSEDAREA.append(init_XY)
                         init_XY = (init_XY[0] + 1, init_XY[1])
                         a = a + 1
-                    init_XY = (init_XY[0] - 2*(SensorData[y-1][1]) + 1, init_XY[1] + 1)
+                    init_XY = (init_XY[0] - 2*(SensorData[y-1][1]), init_XY[1] + 1)
                     z = z + 1
+                #print("-------------- Sensor area: ", len(SENSEDAREA) - init_length)
         for x in Drones:
             ax.add_artist(x)    
 
@@ -134,17 +139,24 @@ class SensorGridWorld(gym.Env):
         #since redteam is travelling to exact middle, treat middle as origin and thus c will be 0
         RedTeamLocations = []
         #subtract origin point values of midcords to get euclidean location of redteam
+
         REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
         if REDTEAMCALCS[0] != 0:
             gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
-        for x in range(abs(REDTEAMCALCS[0])):
-            y = gradient * x
-            y = round(y)
-            #add back midcord values to get actual location of redteam at each timestep
-            x = x + MIDCORDS[0]
-            y = y + MIDCORDS[1]
-            temp = [x,y]
-            RedTeamLocations.append(temp)
+        if REDTEAMCALCS[0] > 0:    
+            for x in range(REDTEAMCALCS[0]):
+                y = gradient * x
+                y = round(y)
+                #add back midcord values to get actual location of redteam at each timestep
+                temp = (x + 524, y + 524)
+                RedTeamLocations.append(temp)
+        if REDTEAMCALCS[0] < 0:    
+            for x in range(0, REDTEAMCALCS[0]+1, -1):
+                y = gradient * x
+                y = round(y)
+                #add back midcord values to get actual location of redteam at each timestep
+                temp = (x + 524, y + 524)
+                RedTeamLocations.append(temp)
         # Two end points to plot
         RedTeamtStartEnd = [REDTEAM, MIDCORDS]
         
@@ -157,18 +169,13 @@ class SensorGridWorld(gym.Env):
         #loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
 
-        x = 0
-        for x in range(len(RedTeamLocations)):
-            print(RedTeamLocations[x], SENSEDAREA.count(RedTeamLocations[x]))
-            if SENSEDAREA.count(x) >= 1:
+        for x in RedTeamLocations:
+            if SENSEDAREA.count(x) > 0:
                 RedTeamSensed.append(x)
-            x = x + 1
-        
-        #print(DRONES[0][0])
-        #print(SENSEDAREA.count((633, 424)))#
 
         if len(RedTeamSensed) > 0:
             print("The Red Team was sensed at locations: ", RedTeamSensed)
+            print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocations)) * 100), "% of RedTeam Cells" )
         else:
             print("The Red Team was not sensed ", RedTeamSensed)
 
@@ -191,7 +198,7 @@ SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
               "purple"), ("IR", 15, 2, "pink"), ("US", 10, 1, "green"))
 GRIDSIZE = 1048
 MIDPOINT = int(GRIDSIZE/2)
-T = GRIDSIZE/5
+T = GRIDSIZE/6
 # SensorGridWorld(GridSize,DroneCharacteristic)
 DRONES = []
 DRONES.append(((int(T+MIDPOINT), int(MIDPOINT)), (1, 3, 4)))
