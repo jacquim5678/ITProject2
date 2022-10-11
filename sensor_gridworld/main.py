@@ -132,14 +132,13 @@ class SensorGridWorld(gym.Env):
         # ------------------ List of places REDTEAM tranversed --------------------#
         ## linear line formula y = mx + c;
         #since redteam is travelling to exact middle, treat middle as origin and thus c will be 0
-        c = 0
         RedTeamLocations = []
         #subtract origin point values of midcords to get euclidean location of redteam
         REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
         if REDTEAMCALCS[0] != 0:
             gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
         for x in range(REDTEAMCALCS[0]):
-            y = gradient * x + c
+            y = gradient * x
             y = round(y)
             #add back midcord values to get actual location of redteam at each timestep
             x = x + MIDCORDS[0]
@@ -168,13 +167,13 @@ class SensorGridWorld(gym.Env):
         #print(DRONES[0][0])
         #print(SENSEDAREA.count((633, 424)))#
 
-        if len(RedTeamSensed) > 0 :
+        if len(RedTeamSensed) > 0:
             print("The Red Team was sensed at locations: ", RedTeamSensed)
-        else :
+        else:
             print("The Red Team was not sensed ", RedTeamSensed)
 
         ax.add_patch(RedTeamPath)
-        plt.show()
+        #plt.show()
 
     def render(self, mode='console'):
         print("render")
