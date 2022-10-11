@@ -137,7 +137,7 @@ class SensorGridWorld(gym.Env):
         REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
         if REDTEAMCALCS[0] != 0:
             gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
-        for x in range(REDTEAMCALCS[0]):
+        for x in range(abs(REDTEAMCALCS[0])):
             y = gradient * x
             y = round(y)
             #add back midcord values to get actual location of redteam at each timestep
@@ -158,9 +158,6 @@ class SensorGridWorld(gym.Env):
         RedTeamSensed = []
         for x in RedTeamLocations:
             #print(x, SENSEDAREA.count(x))
-            #print(SENSEDAREA[1])
-            
-
             if SENSEDAREA.count(x) >= 1:
                 RedTeamSensed.append(x)
         
