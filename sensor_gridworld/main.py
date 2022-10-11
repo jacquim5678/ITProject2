@@ -83,6 +83,9 @@ class SensorGridWorld(gym.Env):
         for x in Drones:
             ax.add_artist(x)    
 
+        SENSEDAREA = list(dict.fromkeys(SENSEDAREA))
+
+
         x = []
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
@@ -127,19 +130,17 @@ class SensorGridWorld(gym.Env):
         #since redteam is travelling to exact middle, treat middle as origin and thus c will be 0
         c = 0
         RedTeamLocations = []
-        if (REDTEAMCALCS[0] < MIDCORDS[0]):
-            #subtract origin point values of midcords to get euclidean location of redteam
-            REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
-            gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
-            for x in range(REDTEAMCALCS[0], 1):
-                y = gradient * x + c
-                y = round(y)
-                #add back midcord values to get actual location of redteam at each timestep
-                x = x + MIDCORDS[0]
-                y = y + MIDCORDS[1]
-                temp = [x,y]
-                RedTeamLocations.append(temp)
-        #print(RedTeamLocations)
+        #subtract origin point values of midcords to get euclidean location of redteam
+        REDTEAMCALCS = (((REDTEAMCALCS[0]-MIDCORDS[0]), (REDTEAMCALCS[1]-MIDCORDS[1])))
+        gradient = (REDTEAMCALCS[1]/REDTEAMCALCS[0])
+        for x in range(REDTEAMCALCS[0]):
+            y = gradient * x + c
+            y = round(y)
+            #add back midcord values to get actual location of redteam at each timestep
+            x = x + MIDCORDS[0]
+            y = y + MIDCORDS[1]
+            temp = [x,y]
+            RedTeamLocations.append(temp)
         # Two end points to plot
         RedTeamtStartEnd = [REDTEAM, MIDCORDS]
         
@@ -148,6 +149,20 @@ class SensorGridWorld(gym.Env):
         path = Path(RedTeamtStartEnd, code)
         
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
+
+        #loop through RedTeamLocations and check if cell exists in Sensed Area
+        RedTeamSensed = []
+        for x in RedTeamLocations:
+            print(x, SENSEDAREA.count(x))
+            #print(SENSEDAREA[1])
+
+            if SENSEDAREA.count(x) >= 1:
+                RedTeamSensed.append(x)
+        
+        if len(RedTeamSensed) > 0 :
+            print("The Red Team was sensed at locations: ", RedTeamSensed)
+        else :
+            print("The Red Team was not sensed ", RedTeamSensed)
 
         ax.add_patch(RedTeamPath)
         plt.show()
@@ -168,7 +183,7 @@ SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
               "purple"), ("IR", 15, 2, "pink"), ("US", 10, 1, "green"))
 GRIDSIZE = 1048
 MIDPOINT = int(GRIDSIZE/2)
-T = GRIDSIZE/3.5
+T = GRIDSIZE/5
 # SensorGridWorld(GridSize,DroneCharacteristic)
 DRONES = []
 DRONES.append(((int(T+MIDPOINT), int(MIDPOINT)), (1, 3, 4)))
@@ -182,7 +197,7 @@ DRONES.append(
 DRONES.append(
     ((int(T+math.cos(360)+MIDPOINT), int(-T+math.sin(360)+MIDPOINT)), (3, 4)))
 
-print(DRONES)
+#print(DRONES)
 
 env = SensorGridWorld(GRIDSIZE, DRONES)
 env.reset()
