@@ -191,7 +191,9 @@ class SensorGridWorld(gym.Env):
                     # Moves the end point of the to where obstacle blocked it 
                     ENDPOINT = ((RedTeamLocations[y][0]), (RedTeamLocations[y][1]))
                     # Removes RedTeamLocation after obstacle point from list
-                    del RedTeamLocations[y]
+                    RedTeamLocationsv2 = list(RedTeamLocations)
+                    del RedTeamLocationsv2[-y:]
+                    RedTeamLocations = RedTeamLocationsv2
                     break
         
         # Two end points to plot
@@ -206,19 +208,33 @@ class SensorGridWorld(gym.Env):
                     
         #loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
-
-        for x in RedTeamLocations:
-            if SENSEDAREA.count(x) > 0:
-                RedTeamSensed.append(x)
-
-        if len(RedTeamSensed) > 0:
-            print("The Red Team was sensed at locations: ", RedTeamSensed)
-            print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocations)) * 100), "% of RedTeam Cells" )
-        else:
-            print("The Red Team was not sensed ", RedTeamSensed)
+        if blocked == False:
+            for x in RedTeamLocations:
+                if SENSEDAREA.count(x) > 0:
+                    RedTeamSensed.append(x)
+    
+            if len(RedTeamSensed) > 0:
+                print("The Red Team was sensed at locations: ", RedTeamSensed)
+                print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocations)) * 100), "% of RedTeam Cells" )
+            else:
+                print("The Red Team was not sensed ", RedTeamSensed)
+                
+            ax.add_patch(RedTeamPath)
+            plt.show()
             
-        ax.add_patch(RedTeamPath)
-        plt.show()
+        if blocked == True:
+            for x in RedTeamLocationsv2:
+                if SENSEDAREA.count(x) > 0:
+                     RedTeamSensed.append(x)
+     
+            if len(RedTeamSensed) > 0:
+                print("The Red Team was sensed at locations: ", RedTeamSensed)
+                print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocationsv2)) * 100), "% of RedTeam Cells" )
+            else:
+                print("The Red Team was not sensed ", RedTeamSensed)
+                 
+            ax.add_patch(RedTeamPath)
+            plt.show()
 
     def render(self, mode='console'):
         print("render")
