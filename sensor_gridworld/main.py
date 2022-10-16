@@ -182,13 +182,17 @@ class SensorGridWorld(gym.Env):
             else :
                 return False
         blocked = False
-        for obs in range (0, len(Obstacles)):
-            for y in range (0, len(RedTeamLocations)):
+        
+        for obs in range(len(Obstacles)):
+            for y in range(len(RedTeamLocations)-1, -1, -1):
                 blocked = FindPoint(ObstaclesX1[obs], ObstaclesY1[obs], ObstaclesX2[obs], ObstaclesY2[obs], RedTeamLocations[y][0], RedTeamLocations[y][1])
                 if blocked == True:
                     print("Hit an obs at " + str(RedTeamLocations[y][0]) + " " +  str(RedTeamLocations[y][1]))
                     # Moves the end point of the to where obstacle blocked it 
                     ENDPOINT = ((RedTeamLocations[y][0]), (RedTeamLocations[y][1]))
+                    # Removes RedTeamLocation after obstacle point from list
+                    del RedTeamLocations[y]
+                    break
         
         # Two end points to plot
         RedTeamtStartEnd = [REDTEAM, ENDPOINT]
