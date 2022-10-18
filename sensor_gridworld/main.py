@@ -30,7 +30,8 @@ class SensorGridWorld(gym.Env):
 
     def reset(self):
         # Grid Plot Initialisation
-        fig, ax = plt.subplots(figsize=(1048, 1048), dpi=10)
+        gridSize = 1048
+        fig, ax = plt.subplots(figsize=(gridSize, gridSize), dpi=10)
         plt.xlim([0, 1048])
         plt.ylim([0, 1048])
         plt.tight_layout(pad=0)
@@ -39,9 +40,9 @@ class SensorGridWorld(gym.Env):
         # Empty Grid
         Grid = []
         Grid.append(Rectangle((0, 0), 1, 1))
-        Grid.append(Rectangle((0, 1048), 1, 1))
-        Grid.append(Rectangle((1048, 0), 1, 1))
-        Grid.append(Rectangle((1048, 1048), 1, 1))
+        Grid.append(Rectangle((0, gridSize), 1, 1))
+        Grid.append(Rectangle((gridSize, 0), 1, 1))
+        Grid.append(Rectangle((gridSize, gridSize), 1, 1))
         GridPatch = PatchCollection(Grid, alpha=0)
         ax.add_collection(GridPatch)
 
