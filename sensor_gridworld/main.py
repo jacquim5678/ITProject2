@@ -32,8 +32,8 @@ class SensorGridWorld(gym.Env):
         # Grid Plot Initialisation
         gridSize = 1048
         fig, ax = plt.subplots(figsize=(gridSize, gridSize), dpi=10)
-        plt.xlim([0, 1048])
-        plt.ylim([0, 1048])
+        plt.xlim([0, gridSize])
+        plt.ylim([0, gridSize])
         plt.tight_layout(pad=0)
         plt.axis("image")
 
@@ -48,7 +48,10 @@ class SensorGridWorld(gym.Env):
 
         # High Value Target
         HVT = []
-        HVT.append(Rectangle((450, 450), 400, 150, color="blue"))
+        HVTlocation = (450, 450)
+        HVTwidth = 400
+        HVThieght = 150
+        HVT.append(Rectangle(HVTlocation, HVTwidth, HVThieght, color="blue"))
         for x in HVT:
             ax.add_artist(x)
 
@@ -58,7 +61,8 @@ class SensorGridWorld(gym.Env):
         ObstaclesY1 = []
         ObstaclesX2 = []
         ObstaclesY2 = []
-        for x in range(0, 4):
+        numObstacles = 4
+        for x in range(0, numObstacles):
             v1 = random.randint(0, 1048)
             v2 = random.randint(0, 1048)
             v3 = random.randint(20, 500)
