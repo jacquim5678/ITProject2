@@ -61,7 +61,7 @@ class SensorGridWorld(gym.Env):
 
         # High Value Target
         HVT = []
-        HVTlocation = (50, 450)
+        HVTlocation = (gridSize/2, gridSize/2)
         HVTwidth = 400
         HVThieght = 150
         HVT.append(Rectangle(HVTlocation, HVTwidth, HVThieght, color="blue"))
@@ -74,12 +74,13 @@ class SensorGridWorld(gym.Env):
         ObstaclesY1 = []
         ObstaclesX2 = []
         ObstaclesY2 = []
-        numObstacles = 4
+        numObstacles = 10
+        maxObsSize = 200
         for x in range(0, numObstacles):
             v1 = random.randint(0, 1048)
             v2 = random.randint(0, 1048)
-            v3 = random.randint(20, 500)
-            v4 = random.randint(20, 500)
+            v3 = random.randint(20, maxObsSize)
+            v4 = random.randint(20, maxObsSize)
             #------- Vertices Used to Find Area Obstacles Cover--------#
             ObstaclesX1.append(v1)
             ObstaclesY1.append(v2)
@@ -217,7 +218,7 @@ class SensorGridWorld(gym.Env):
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
                     
-        # Loop through RedTeamLocations and check if cell exists in Sensed Area
+        # loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
         if blocked == False:
             for x in RedTeamLocations:
