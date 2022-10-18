@@ -125,13 +125,13 @@ class SensorGridWorld(gym.Env):
         side = random.choice(sides)
         if side == 'top':
             # Cord to spawn at top (x,Y)
-            REDTEAM = ((random.randint(0, gridSize), random.randint(0, (gridSize/10))))
+            REDTEAM = ((random.randint(0, gridSize), random.randint(0, round(gridSize/10))))
         elif side == 'bottom':
-            REDTEAM = ((random.randint(0, gridSize), random.randint((gridSize/10) * 9, gridSize)))
+            REDTEAM = ((random.randint(0, gridSize), random.randint(round(gridSize/10 * 9), gridSize)))
         elif side == 'left':
-            REDTEAM = ((random.randint(0, (gridSize/10)), random.randint(0, gridSize)))
+            REDTEAM = ((random.randint(0, round(gridSize/10)), random.randint(0, gridSize)))
         elif side == 'right':
-            REDTEAM = ((random.randint((gridSize/10) * 9, gridSize), random.randint(0, gridSize)))
+            REDTEAM = ((random.randint(round(gridSize/10 * 9), gridSize), random.randint(0, gridSize)))
          
         
         # getting REDTEAM to centre
