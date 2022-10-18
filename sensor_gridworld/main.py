@@ -7,6 +7,7 @@ import math
 import xarray as xr
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib.patches import Circle, Wedge, Polygon, Rectangle, PathPatch
 from matplotlib.path import Path
 from matplotlib.collections import PatchCollection
@@ -36,6 +37,19 @@ class SensorGridWorld(gym.Env):
         plt.ylim([0, gridSize])
         plt.tight_layout(pad=0)
         plt.axis("image")
+
+        # Add Legend
+        #SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
+        #      "#f9521e") <Orange>, ("IR", 15, 2, "#2ff3e0")<lightblue>, ("US", 10, 1, "#2f7604") <green>)
+        red_patch = mpatches.Patch(color='red', label='RedTeam Path')
+        blue_patch = mpatches.Patch(color='blue', label='HVT')
+        yellow_patch = mpatches.Patch(color='yellow', label='Acoustic Sensor')
+        green_patch = mpatches.Patch(color='green', label='US Sensor')
+        orange_patch = mpatches.Patch(color='#f9521e',label='Optical Sensor')
+        lightblue_patch = mpatches.Patch(color='#2ff3e0',label='IR Sensor')
+        black_patch = mpatches.Patch(color='black',label='obstacles')
+        ax.legend(handles=[blue_patch, red_patch, black_patch,  green_patch, lightblue_patch, orange_patch, yellow_patch], prop={'size':150}, loc='lower right', title='Legend')
+       
 
         # Empty Grid
         Grid = []
@@ -237,13 +251,14 @@ class SensorGridWorld(gym.Env):
         pass
 
 
-# No - Name - Range - Battery Use
-# 3 - IR - 15m - 2 - Pink
-# 4 - US - 10m - 1 - Green
+# No - Name - Range - Battery Use - Colour
 # 1 - Acoustic - 100m - 2 - Yellow
-# 2 - Optical - 45m - 6 - Purple
+# 2 - Optical - 45m - 6 - orange
+# 3 - IR - 15m - 2 - light blue
+# 4 - US - 10m - 1 - green
+
 SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
-              "purple"), ("IR", 15, 2, "pink"), ("US", 10, 1, "green"))
+              "#f9521e"), ("IR", 15, 2, "#2ff3e0"), ("US", 10, 1, "#2f7604"))
 GRIDSIZE = 1048
 MIDPOINT = int(GRIDSIZE/2)
 T = GRIDSIZE/6
