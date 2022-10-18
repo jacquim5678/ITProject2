@@ -114,39 +114,28 @@ class SensorGridWorld(gym.Env):
         SENSEDAREA = list(dict.fromkeys(SENSEDAREA))
 
         x = []
-        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
-        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
-        x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
+        x.append(tuple((random.randint(0, gridSize), random.randint(0, gridSize))))
+        x.append(tuple((random.randint(0, gridSize), random.randint(0, gridSize))))
+        x.append(tuple((random.randint(0, gridSize), random.randint(0, gridSize))))
         
         # REDTEAM
         
-        numREDTEAM = self.REDTEAM
-        REDTEAM = 0
-        stepsRedtake = 0  # No. of times will iterate through movements
-        # Do only once to set starting point
         # Assigning grid coord fpr EN to spwan at (only edges)
         sides = ['top', 'bottom', 'left', 'right']
         side = random.choice(sides)
         if side == 'top':
             # Cord to spawn at top (x,Y)
-            REDTEAM = ((random.randint(0, 1048), random.randint(0, 100)))
+            REDTEAM = ((random.randint(0, gridSize), random.randint(0, (gridSize/10))))
         elif side == 'bottom':
-            REDTEAM = ((random.randint(0, 1048), random.randint(900, 1048)))
+            REDTEAM = ((random.randint(0, gridSize), random.randint((gridSize/10) * 9, gridSize)))
         elif side == 'left':
-            REDTEAM = ((random.randint(0, 100), random.randint(0, 1048)))
+            REDTEAM = ((random.randint(0, (gridSize/10)), random.randint(0, gridSize)))
         elif side == 'right':
-            REDTEAM = ((random.randint(900, 1048), random.randint(0, 1048)))
-        
-        #no longer needed
-        # for x in range(0, stepsRedtake):
-        #     REDTEAM.append((REDTEAM[x][0] + random.randint(-100, 100),
-        #                  REDTEAM[x][1] + random.randint(-100, 100)))  # Indicates EM
-        #     # movement should probs only be one 1m
-        
+            REDTEAM = ((random.randint((gridSize/10) * 9, gridSize), random.randint(0, gridSize)))
+         
         
         # getting REDTEAM to centre
-        GRIDSIZE = 1048
-        MIDPOINT = int(GRIDSIZE/2)
+        MIDPOINT = int(gridSize/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
         ENDPOINT = MIDCORDS
         #print("REDTEAM COORDS: ", REDTEAM[0], REDTEAM[1])
