@@ -54,12 +54,26 @@ class SensorGridWorld(gym.Env):
 
         # Obstacles
         Obstacles = []
+        ObstaclesX1 = []
+        ObstaclesY1 = []
+        ObstaclesX2 = []
+        ObstaclesY2 = []
         for x in range(0, 4):
-            Obstacles.append(Rectangle((random.randint(0, 1048), random.randint(
-                0, 1048)), random.randint(20, 100), random.randint(20, 100), color="black"))
+            v1 = random.randint(0, 1048)
+            v2 = random.randint(0, 1048)
+            v3 = random.randint(20, 500)
+            v4 = random.randint(20, 500)
+            #-------------- Find Area Obstacles Cover----------------------------------------#
+            ObstaclesX1.append(v1)
+            ObstaclesY1.append(v2)
+            ObstaclesX2.append(v1 + v3)
+            ObstaclesY2.append(v2 + v4)
+            
+            Obstacles.append(Rectangle((v1, v2), v3, v4, color="black"))
         for x in Obstacles:
             ax.add_artist(x)
-
+            
+      
         # Sensors
         SENSEDAREA = []
         DRONES = self.DRONES
@@ -94,7 +108,6 @@ class SensorGridWorld(gym.Env):
             ax.add_artist(x)    
 
         SENSEDAREA = list(dict.fromkeys(SENSEDAREA))
-        #print(DRONES[0][0])
 
         x = []
         x.append(tuple((random.randint(0, 1048), random.randint(0, 1048))))
@@ -131,6 +144,7 @@ class SensorGridWorld(gym.Env):
         GRIDSIZE = 1048
         MIDPOINT = int(GRIDSIZE/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
+        ENDPOINT = MIDCORDS
         #print("REDTEAM COORDS: ", REDTEAM[0], REDTEAM[1])
         #used to preserve values of REDTEAm tuple for drawing of REDTEAM path
         REDTEAMCALCS = (REDTEAM[0], REDTEAM[1])
@@ -158,8 +172,33 @@ class SensorGridWorld(gym.Env):
                 #add back midcord values to get actual location of redteam at each timestep
                 temp = (x + 524, y + 524)
                 RedTeamLocations.append(temp)
+                
+        # Loop through RedTeamLocations if hit an obstacle
+        # Function to determine if a point lies within a rectangle
+        def FindPoint(x1, y1, x2,
+              y2, x, y) :
+            if (x > x1 and x < x2 and
+                y > y1 and y < y2) :
+                return True
+            else :
+                return False
+        blocked = False
+        
+        for obs in range(len(Obstacles)):
+            for y in range(len(RedTeamLocations)-1, -1, -1):
+                blocked = FindPoint(ObstaclesX1[obs], ObstaclesY1[obs], ObstaclesX2[obs], ObstaclesY2[obs], RedTeamLocations[y][0], RedTeamLocations[y][1])
+                if blocked == True:
+                    print("Hit an obs at " + str(RedTeamLocations[y][0]) + " " +  str(RedTeamLocations[y][1]))
+                    # Moves the end point of the to where obstacle blocked it 
+                    ENDPOINT = ((RedTeamLocations[y][0]), (RedTeamLocations[y][1]))
+                    # Removes RedTeamLocation after obstacle point from list
+                    RedTeamLocationsv2 = list(RedTeamLocations)
+                    del RedTeamLocationsv2[-y:]
+                    RedTeamLocations = RedTeamLocationsv2
+                    break
+        
         # Two end points to plot
-        RedTeamtStartEnd = [REDTEAM, MIDCORDS]
+        RedTeamtStartEnd = [REDTEAM, ENDPOINT]
         
         # Drawing the line between points
         code = [Path.MOVETO] + [Path.LINETO] 
@@ -167,21 +206,36 @@ class SensorGridWorld(gym.Env):
         
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
+                    
         #loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
-
-        for x in RedTeamLocations:
-            if SENSEDAREA.count(x) > 0:
-                RedTeamSensed.append(x)
-
-        if len(RedTeamSensed) > 0:
-            print("The Red Team was sensed at locations: ", RedTeamSensed)
-            print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocations)) * 100), "% of RedTeam Cells" )
-        else:
-            print("The Red Team was not sensed ", RedTeamSensed)
-
-        ax.add_patch(RedTeamPath)
-        plt.show()
+        if blocked == False:
+            for x in RedTeamLocations:
+                if SENSEDAREA.count(x) > 0:
+                    RedTeamSensed.append(x)
+    
+            if len(RedTeamSensed) > 0:
+                print("The Red Team was sensed at locations: ", RedTeamSensed)
+                print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocations)) * 100), "% of RedTeam Cells" )
+            else:
+                print("The Red Team was not sensed ", RedTeamSensed)
+                
+            ax.add_patch(RedTeamPath)
+            plt.show()
+            
+        if blocked == True:
+            for x in RedTeamLocationsv2:
+                if SENSEDAREA.count(x) > 0:
+                     RedTeamSensed.append(x)
+     
+            if len(RedTeamSensed) > 0:
+                print("The Red Team was sensed at locations: ", RedTeamSensed)
+                print("Sensed ", round((len(RedTeamSensed)/len(RedTeamLocationsv2)) * 100), "% of RedTeam Cells" )
+            else:
+                print("The Red Team was not sensed ", RedTeamSensed)
+                 
+            ax.add_patch(RedTeamPath)
+            plt.show()
 
     def render(self, mode='console'):
         print("render")
