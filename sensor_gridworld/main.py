@@ -38,9 +38,8 @@ class SensorGridWorld(gym.Env):
         plt.tight_layout(pad=0)
         plt.axis("image")
 
-        # Add Legend
-        #SensorData = (("Acoustic", 100, 2, "yellow"), ("Optical", 45, 6,
-        #      "#f9521e") <Orange>, ("IR", 15, 2, "#2ff3e0")<lightblue>, ("US", 10, 1, "#2f7604") <green>)
+        # Legend
+        
         red_patch = mpatches.Patch(color='red', label='RedTeam Path')
         blue_patch = mpatches.Patch(color='blue', label='HVT')
         yellow_patch = mpatches.Patch(color='yellow', label='Acoustic Sensor')
@@ -81,7 +80,7 @@ class SensorGridWorld(gym.Env):
             v2 = random.randint(0, 1048)
             v3 = random.randint(20, 500)
             v4 = random.randint(20, 500)
-            #-------------- Find Area Obstacles Cover----------------------------------------#
+            #------- Vertices Used to Find Area Obstacles Cover--------#
             ObstaclesX1.append(v1)
             ObstaclesY1.append(v2)
             ObstaclesX2.append(v1 + v3)
@@ -109,7 +108,7 @@ class SensorGridWorld(gym.Env):
                 #------------------- Find Area covered by Sensors -----------------------#
                 init_XY = ((x[0][0] - SensorData[y-1][1]), (x[0][1] - SensorData[y-1][1]))
 
-                #go through each cell in the square produced by sensor range and if distance to center is greater than range, do not append to sensed area
+                # go through each cell in the square produced by sensor range and if distance to center is greater than range, do not append to sensed area
                 z = 0
                 for z in range(2 * (SensorData[y-1][1])):
                     a = 0
@@ -132,6 +131,8 @@ class SensorGridWorld(gym.Env):
         x.append(tuple((random.randint(0, gridSize), random.randint(0, gridSize))))
         x.append(tuple((random.randint(0, gridSize), random.randint(0, gridSize))))
         
+        
+        
         # REDTEAM
         
         # Assigning grid coord fpr EN to spwan at (only edges)
@@ -148,7 +149,7 @@ class SensorGridWorld(gym.Env):
             REDTEAM = ((random.randint(round(gridSize/10 * 9), gridSize), random.randint(0, gridSize)))
          
         
-        # getting REDTEAM to HVT
+        # Moving REDTEAM to HVT
         MIDPOINT = int(gridSize/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
         centreX = HVTlocation[0] + (HVTwidth/2)
@@ -216,7 +217,7 @@ class SensorGridWorld(gym.Env):
         RedTeamPath = PathPatch(path, color='red', lw=100, fill=False)
 
                     
-        #loop through RedTeamLocations and check if cell exists in Sensed Area
+        # Loop through RedTeamLocations and check if cell exists in Sensed Area
         RedTeamSensed = []
         if blocked == False:
             for x in RedTeamLocations:
