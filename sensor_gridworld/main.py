@@ -48,7 +48,7 @@ class SensorGridWorld(gym.Env):
         orange_patch = mpatches.Patch(color='#f9521e',label='Optical Sensor')
         lightblue_patch = mpatches.Patch(color='#2ff3e0',label='IR Sensor')
         black_patch = mpatches.Patch(color='black',label='obstacles')
-        ax.legend(handles=[blue_patch, red_patch, black_patch,  green_patch, lightblue_patch, orange_patch, yellow_patch], prop={'size':150}, loc='lower right', title='Legend')
+        ax.legend(handles=[blue_patch, red_patch, black_patch,  green_patch, lightblue_patch, orange_patch, yellow_patch], prop={'size':1500}, loc='lower right', title='Legend')
        
 
         # Empty Grid
