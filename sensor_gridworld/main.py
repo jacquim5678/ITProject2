@@ -62,7 +62,7 @@ class SensorGridWorld(gym.Env):
 
         # High Value Target
         HVT = []
-        HVTlocation = (450, 450)
+        HVTlocation = (50, 450)
         HVTwidth = 400
         HVThieght = 150
         HVT.append(Rectangle(HVTlocation, HVTwidth, HVThieght, color="blue"))
@@ -148,10 +148,12 @@ class SensorGridWorld(gym.Env):
             REDTEAM = ((random.randint(round(gridSize/10 * 9), gridSize), random.randint(0, gridSize)))
          
         
-        # getting REDTEAM to centre
+        # getting REDTEAM to HVT
         MIDPOINT = int(gridSize/2)
         MIDCORDS = (MIDPOINT, MIDPOINT)
-        ENDPOINT = MIDCORDS
+        centreX = HVTlocation[0] + (HVTwidth/2)
+        centreY = HVTlocation[1] + (HVThieght/2)
+        ENDPOINT = (centreX, centreY)
         #print("REDTEAM COORDS: ", REDTEAM[0], REDTEAM[1])
         #used to preserve values of REDTEAm tuple for drawing of REDTEAM path
         REDTEAMCALCS = (REDTEAM[0], REDTEAM[1])
@@ -195,7 +197,7 @@ class SensorGridWorld(gym.Env):
             for y in range(len(RedTeamLocations)-1, -1, -1):
                 blocked = FindPoint(ObstaclesX1[obs], ObstaclesY1[obs], ObstaclesX2[obs], ObstaclesY2[obs], RedTeamLocations[y][0], RedTeamLocations[y][1])
                 if blocked == True:
-                    print("Hit an obs at " + str(RedTeamLocations[y][0]) + " " +  str(RedTeamLocations[y][1]))
+                    print("Red Team hit an obs at " + str(RedTeamLocations[y][0]) + " " +  str(RedTeamLocations[y][1]))
                     # Moves the end point of the to where obstacle blocked it 
                     ENDPOINT = ((RedTeamLocations[y][0]), (RedTeamLocations[y][1]))
                     # Removes RedTeamLocation after obstacle point from list
