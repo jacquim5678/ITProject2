@@ -61,7 +61,7 @@ class SensorGridWorld(gym.Env):
 
         # High Value Target
         HVT = []
-        HVTlocation = (gridSize/2, gridSize/2)
+        HVTlocation = (450, 450)
         HVTwidth = 400
         HVThieght = 150
         HVT.append(Rectangle(HVTlocation, HVTwidth, HVThieght, color="blue"))
@@ -74,7 +74,7 @@ class SensorGridWorld(gym.Env):
         ObstaclesY1 = []
         ObstaclesX2 = []
         ObstaclesY2 = []
-        numObstacles = 10
+        numObstacles = 4
         maxObsSize = 200
         for x in range(0, numObstacles):
             v1 = random.randint(0, 1048)
@@ -156,6 +156,7 @@ class SensorGridWorld(gym.Env):
         centreX = HVTlocation[0] + (HVTwidth/2)
         centreY = HVTlocation[1] + (HVThieght/2)
         ENDPOINT = (centreX, centreY)
+        ENDPOINT = MIDCORDS
         #print("REDTEAM COORDS: ", REDTEAM[0], REDTEAM[1])
         #used to preserve values of REDTEAm tuple for drawing of REDTEAM path
         REDTEAMCALCS = (REDTEAM[0], REDTEAM[1])
