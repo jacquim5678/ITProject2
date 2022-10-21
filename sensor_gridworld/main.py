@@ -75,7 +75,7 @@ class SensorGridWorld(gym.Env):
         ObstaclesX2 = []
         ObstaclesY2 = []
         numObstacles = 4
-        maxObsSize = 200
+        maxObsSize = 500
         for x in range(0, numObstacles):
             v1 = random.randint(0, 1048)
             v2 = random.randint(0, 1048)
@@ -92,7 +92,7 @@ class SensorGridWorld(gym.Env):
             ax.add_artist(x)
             
       
-        # Sensors
+        # BlueTeam
         SENSEDAREA = []
         DRONES = self.DRONES
         Drones = []
@@ -140,7 +140,7 @@ class SensorGridWorld(gym.Env):
         sides = ['top', 'bottom', 'left', 'right']
         side = random.choice(sides)
         if side == 'top':
-            # Cord to spawn at top (x,Y)
+            # Cord to spawn at top (x,Y)                                     #10% value (spawn edges)
             REDTEAM = ((random.randint(0, gridSize), random.randint(0, round(gridSize/10))))
         elif side == 'bottom':
             REDTEAM = ((random.randint(0, gridSize), random.randint(round(gridSize/10 * 9), gridSize)))
@@ -175,6 +175,7 @@ class SensorGridWorld(gym.Env):
                 y = gradient * x
                 y = round(y)
                 #add back midcord values to get actual location of redteam at each timestep
+                            # hard codeed 524 value, (centre of 1048 grid)
                 temp = (x + 524, y + 524)
                 RedTeamLocations.append(temp)
         if REDTEAMCALCS[0] < 0:    
